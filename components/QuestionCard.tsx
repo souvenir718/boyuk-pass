@@ -66,9 +66,14 @@ export default function QuestionCard({
     <div className="flex flex-col gap-4 pb-32">
       {/* 문제 번호 + 제목 */}
       <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-        <p className="text-xs font-medium text-green-600 mb-2">
-          문제 {questionNumber} / {total}
-        </p>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-xs font-medium text-green-600">문제 {questionNumber} / {total}</p>
+          {question.category && (
+            <span className="text-xs font-semibold text-green-700 bg-green-100 px-2.5 py-1 rounded-full">
+              {question.category}
+            </span>
+          )}
+        </div>
         <h2 className="text-base font-bold text-gray-900 leading-snug">
           {question.title}
         </h2>
