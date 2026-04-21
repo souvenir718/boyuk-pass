@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Question } from "@/types/question"
 import { hasAnswer } from "@/lib/utils"
 import OptionItem from "./OptionItem"
@@ -23,10 +23,23 @@ export default function QuestionCard({
   const [selected, setSelected] = useState<number | null>(null)
   const [revealed, setRevealed] = useState(browseMode)
   const [shortInput, setShortInput] = useState("")
+  const [bannerVisible, setBannerVisible] = useState(false)
 
   const isShort = question.type === "short"
   const answerReady = hasAnswer(question)
   const correctIndex = typeof question.answer === "number" ? question.answer : null
+
+  const isCorrectAnswer = revealed
+    ? isShort
+      ? shortInput.trim() === String(question.answer).trim()
+      : selected === correctIndex
+    : null
+
+  useEffect(() => {
+    if (revealed && !browseMode) {
+      setBannerVisible(true)
+    }
+  }, [revealed, browseMode])
 
   function handleSelect(index: number) {
     if (revealed || !answerReady || browseMode) return
@@ -40,16 +53,11 @@ export default function QuestionCard({
   }
 
   function handleNext() {
-    let isCorrect = false
-    if (isShort) {
-      isCorrect = shortInput.trim() === String(question.answer).trim()
-    } else {
-      isCorrect = selected === correctIndex
-    }
+    setBannerVisible(false)
     setSelected(null)
     setRevealed(false)
     setShortInput("")
-    onNext(isCorrect)
+    onNext(isCorrectAnswer ?? false)
   }
 
   const hasBottomButtons = revealed || !answerReady || (isShort && !browseMode)
@@ -69,6 +77,33 @@ export default function QuestionCard({
         )}
       </div>
 
+      {/* 정답/오답 배너 */}
+      {bannerVisible && (
+        <div
+          className={`rounded-2xl px-5 py-4 flex items-center gap-3 animate-[fadeSlideIn_0.25s_ease-out] ${
+            isCorrectAnswer
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          <span className="text-2xl">{isCorrectAnswer ? "🎉" : "😢"}</span>
+          <div>
+            {isCorrectAnswer ? (
+              <p className="font-bold text-base">정답입니다!</p>
+            ) : (
+              <>
+                {!isShort && correctIndex !== null && (
+                  <p className="font-bold text-base">정답은 {["①","②","③","④","⑤"][correctIndex]}번이에요</p>
+                )}
+                {isShort && (
+                  <p className="font-bold text-base">정답: {question.answer}</p>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* 단답형 입력 */}
       {isShort && !browseMode && (
         <div className="flex flex-col gap-2">
@@ -79,19 +114,14 @@ export default function QuestionCard({
             onKeyDown={(e) => { if (e.key === "Enter" && !revealed) handleShortSubmit() }}
             disabled={revealed}
             placeholder="정답을 입력하세요"
-            className="w-full px-4 py-3 rounded-2xl border border-gray-200 bg-white text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-green-400 disabled:bg-gray-50 disabled:text-gray-400"
+            className={`w-full px-4 py-3 rounded-2xl border text-sm text-gray-900 placeholder-gray-400 focus:outline-none transition-colors ${
+              revealed
+                ? isCorrectAnswer
+                  ? "bg-green-50 border-green-300 text-green-800"
+                  : "bg-red-50 border-red-300 text-red-700 line-through"
+                : "bg-white border-gray-200 focus:border-green-400"
+            }`}
           />
-          {revealed && (
-            <div className={`rounded-2xl px-4 py-3 text-sm font-semibold ${
-              shortInput.trim() === String(question.answer).trim()
-                ? "bg-green-50 text-green-600 border border-green-100"
-                : "bg-red-50 text-red-500 border border-red-100"
-            }`}>
-              {shortInput.trim() === String(question.answer).trim()
-                ? "정답입니다!"
-                : `정답: ${question.answer}`}
-            </div>
-          )}
         </div>
       )}
 

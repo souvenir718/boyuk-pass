@@ -18,17 +18,25 @@ export default function OptionItem({
   onClick,
 }: OptionItemProps) {
   let bgClass = "bg-white border-gray-200"
+  let labelClass = "text-gray-500"
+  let textClass = "text-gray-800"
+  let icon: string | null = null
 
   if (revealed) {
     if (isCorrect) {
       bgClass = "bg-green-50 border-green-400"
+      labelClass = "text-green-600"
+      textClass = "text-green-800 font-semibold"
+      icon = "✓"
     } else if (selected && !isCorrect) {
       bgClass = "bg-red-50 border-red-400"
-    } else {
-      bgClass = "bg-white border-gray-200"
+      labelClass = "text-red-400"
+      textClass = "text-red-700"
+      icon = "✗"
     }
   } else if (selected) {
     bgClass = "bg-blue-50 border-blue-400"
+    labelClass = "text-blue-500"
   }
 
   return (
@@ -39,8 +47,13 @@ export default function OptionItem({
         !revealed ? "active:scale-95" : ""
       }`}
     >
-      <span className="font-semibold text-gray-500 mr-2">{LABELS[index]}</span>
-      <span className="text-gray-800 text-sm leading-relaxed">{text}</span>
+      <span className={`font-semibold mr-2 ${labelClass}`}>{LABELS[index]}</span>
+      <span className={`text-sm leading-relaxed ${textClass}`}>{text}</span>
+      {icon && (
+        <span className={`float-right font-bold text-base ${isCorrect ? "text-green-500" : "text-red-400"}`}>
+          {icon}
+        </span>
+      )}
     </button>
   )
 }
