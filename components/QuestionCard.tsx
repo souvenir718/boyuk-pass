@@ -93,7 +93,7 @@ export default function QuestionCard({
             ) : (
               <>
                 {!isShort && correctIndex !== null && (
-                  <p className="font-bold text-base">정답은 {["①","②","③","④","⑤"][correctIndex]}번이에요</p>
+                  <p className="font-bold text-base">정답은 {["①","②","③","④","⑤","⑥"][correctIndex]}번이에요</p>
                 )}
                 {isShort && (
                   <p className="font-bold text-base">정답: {question.answer}</p>

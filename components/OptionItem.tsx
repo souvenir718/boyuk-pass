@@ -7,7 +7,7 @@ interface OptionItemProps {
   onClick: () => void
 }
 
-const LABELS = ["①", "②", "③", "④", "⑤"]
+const LABELS = ["①", "②", "③", "④", "⑤", "⑥"]
 
 export default function OptionItem({
   index,
