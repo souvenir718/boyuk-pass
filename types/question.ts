@@ -6,6 +6,7 @@ export interface Question {
   title: string
   details: string[]
   answer: number | string
+  category?: string
   explanation?: string
 }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Question } from "@/types/question"
 import { hasAnswer } from "@/lib/utils"
 import OptionItem from "./OptionItem"
@@ -23,7 +23,6 @@ export default function QuestionCard({
   const [selected, setSelected] = useState<number | null>(null)
   const [revealed, setRevealed] = useState(browseMode)
   const [shortInput, setShortInput] = useState("")
-  const [bannerVisible, setBannerVisible] = useState(false)
 
   const isShort = question.type === "short"
   const answerReady = hasAnswer(question)
@@ -35,11 +34,7 @@ export default function QuestionCard({
       : selected === correctIndex
     : null
 
-  useEffect(() => {
-    if (revealed && !browseMode) {
-      setBannerVisible(true)
-    }
-  }, [revealed, browseMode])
+  const bannerVisible = revealed && !browseMode
 
   function handleSelect(index: number) {
     if (revealed || !answerReady || browseMode) return
@@ -53,7 +48,6 @@ export default function QuestionCard({
   }
 
   function handleNext() {
-    setBannerVisible(false)
     setSelected(null)
     setRevealed(false)
     setShortInput("")
