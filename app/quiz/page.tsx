@@ -15,6 +15,7 @@ function QuizContent() {
   const searchParams = useSearchParams()
   const isWrongMode = searchParams.get("mode") === "wrong"
   const isBrowseMode = searchParams.get("mode") === "browse"
+  const categoryFilter = searchParams.get("category")
 
   const [shuffled, setShuffled] = useState<Question[]>([])
   const [current, setCurrent] = useState(0)
@@ -31,9 +32,12 @@ function QuizContent() {
       const wrongQuestions = allQuestions.filter((q) => wrongIds.includes(q.id))
       setShuffled(shuffleArray(wrongQuestions))
     } else {
-      setShuffled(shuffleArray(allQuestions))
+      const pool = categoryFilter
+        ? allQuestions.filter((q) => q.category === categoryFilter)
+        : allQuestions
+      setShuffled(shuffleArray(pool))
     }
-  }, [isWrongMode, isBrowseMode])
+  }, [isWrongMode, isBrowseMode, categoryFilter])
 
   if (shuffled.length === 0) return null
 
