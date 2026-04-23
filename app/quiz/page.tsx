@@ -184,7 +184,7 @@ function QuizContent() {
 
 export default function QuizPage() {
   return (
-    <Suspense>
+    <Suspense fallback={<div>로딩 중...</div>}>
       <QuizContent />
     </Suspense>
   )
